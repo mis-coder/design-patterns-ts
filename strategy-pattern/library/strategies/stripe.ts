@@ -1,8 +1,16 @@
 import { PaymentStrategy } from "../interfaces/payment-strategy";
 
 export class StripePayment implements PaymentStrategy {
-  pay(amount: number): void {
-    console.log(`Processing payment of amount ${amount} using stripe...`);
-    // logic for handling stripe payment goes here
+  constructor(private apiKey: string) {}
+  async pay(amount: number): Promise<boolean> {
+    const res = await fetch("https://stripe.com/pay", {
+      method: "POST",
+      body: JSON.stringify({
+        apiKey: this.apiKey,
+        amount,
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.ok;
   }
 }
